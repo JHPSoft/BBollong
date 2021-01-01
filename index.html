@@ -80,7 +80,7 @@
         $("div#ball").css("display","block").animate( {'top' : "-450px" }, 300 ).animate( { top: "-410px", left:"170px", width: "200px", height: "200px", "border-radius": "100px" }, 1000 );
         setTimeout(()=>{
             blockClick = false;
-            let rand = Math.floor(Math.random() * (maxCount - 1) + 1);
+            let rand = Math.floor(Math.random() * (maxCount) + 1);
             $("#number").text(rand);
         },1300)
     }
