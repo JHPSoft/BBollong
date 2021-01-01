@@ -1,0 +1,94 @@
+<!doctype html>
+
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="BBollong">
+    <meta name="author" content="JHPSoft">
+    <title>BBollong</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <style>
+        * { margin: 0px; padding: 0px; }
+        html, body, div { width: 100%; height: 100%;}
+        .no-drag {-ms-user-select: none; -moz-user-select: -moz-none; -webkit-user-select: none; -khtml-user-select: none; user-select:none;}
+        .middle {position: absolute; top: 50%; left: 50%; -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%);}
+        span#reset {cursor: pointer; position: relative; top: -70px; left: 490px; font-weight: 900; font-size: 1.5em;}
+        span#number {color:#ffcc00; font-size: 6em; font-family: cursive;}
+        div#frame { width: 550px; height: 400px; background: linear-gradient(to bottom, #557fd4, #f5f5f5)}
+        div#ball {display: none; background:#00d400;position: relative; width: 70px; height: 70px; border-radius: 35px; left:234px; top:-170px;z-index: 10;}
+        div#button {cursor: pointer; display: block; background:#ffff0000;position: relative; width: 30px; height: 30px; border-radius: 35px; left:256px; top:-43px;z-index: 10;}
+    </style>
+</head>
+<body>
+    <div style="width:550px; height: 100%; display: block; margin: auto; ">
+        <div id="frame" class="middle">
+            <img id="background" class="no-drag" src="img/bg1.png">
+            <div id="button" onmouseout="leave()" onmouseup="leave()" onclick="pick()" onmousedown="over()"></div>
+            <span id="reset" class="no-drag" onclick="reset();">다시</span>
+            <div id="ball"><span id="number" class="middle"></span></div>
+        </div>
+    </div>
+    <audio id="playBBollong">
+        <source src="bbollong.mp3.mp3" type="audio/mpeg">
+        지원하지않는 브라우저입니다.
+    </audio>
+</body>
+<script>
+    let maxCount = 50;
+    let blockClick = false;
+    
+    const hideBall = ()=>{
+        $("div#ball").css({display: "none", background:"#00d400", position: "relative", width: "70px", height: "70px", "border-radius": "35px", left:"234px", top:"-170px", "z-index": "10"})
+    }
+
+    const reset = ()=>{
+        hideBall();
+        $("#reset").css("display","none");
+        setTimeout(()=>{showPrompt();},50)
+    }
+    const showPrompt = ()=>{
+        let val = prompt("마지막 번호가 몇 번인가요?", maxCount);
+        if(isNaN(val)){
+            alert("숫자를 입력해주세요");
+            showPrompt();
+            return;
+        }
+        $("#reset").css("display","block");
+        if(val)
+            maxCount = Number(val);
+    }
+
+    const over = () => {
+        $("#background").attr("src","img/bg2.png")
+    }
+
+    const leave = () => {
+        $("#background").attr("src","img/bg1.png")
+    }
+
+    const pick = () => {
+        if(blockClick)
+            return;
+        blockClick = true;
+        $('#playBBollong')[0].play();
+        
+        $("#number").text("");
+        $("div#ball").css({display: "none", background:"#00d400", position: "relative", width: "70px", height: "70px", "border-radius": "35px", left:"234px", top:"-200px", "z-index": "10"})
+        $("div#ball").css("display","block").animate( {'top' : "-450px" }, 300 ).animate( { top: "-410px", left:"170px", width: "200px", height: "200px", "border-radius": "100px" }, 1000 );
+        setTimeout(()=>{
+            blockClick = false;
+            let rand = Math.floor(Math.random() * (maxCount - 1) + 1);
+            $("#number").text(rand);
+        },1300)
+    }
+
+    $(document).ready(()=>{
+        $("img#background").attr('draggable', false);
+        showPrompt()
+    })
+
+</script>
+</html>
